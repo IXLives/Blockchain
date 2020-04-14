@@ -35,7 +35,7 @@ def valid_proof(block_string, proof):
     guess = guess.encode()
     hash_value = hashlib.sha256(guess).hexdigest()
     # print(f'I will now check if {hash_value} is valid')
-    return hash_value[:3] == '000000'
+    return hash_value[:3] == '000'
 
 
 if __name__ == '__main__':
@@ -68,8 +68,8 @@ if __name__ == '__main__':
         print(data)
         block = data['block']
         print(block)
-        new_proof = proof_of_work(block)
         print('Finding new block')
+        new_proof = proof_of_work(block)
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_proof, "id": id}
         print(f'Sending block {new_proof} from {id}')
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         data = r.json()
 
         # TODO: If the server responds with a 'message' 'New Block Forged'
-        message = data.text
+        message = data['text']
         if message == 'Success':
             print('New Block Forged')
             coins_mined += 1

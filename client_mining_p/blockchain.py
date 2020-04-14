@@ -139,8 +139,8 @@ def hello_world():
 def mine():
     # extract data from request
     data = request.get_json()
-    proof = data.proof
-    block_id = data.id
+    proof = data['proof']
+    block_id = data['id']
     # check validity of proof and id, make sure proof is not already present
     if proof is not None and block_id is not None:
         if proof in blockchain.chain:
