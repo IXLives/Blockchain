@@ -143,17 +143,19 @@ def mine():
     block_id = data['id']
     # check validity of proof and id, make sure proof is not already present
     if proof is not None and block_id is not None:
-        if proof in blockchain.chain:
+        if proof not in blockchain.chain:
+            blockchain.new_block(proof)
             response = {
-                'text': 'Failure'
+                # return success or failure
+                'text': 'Success'
             }
-            return jsonify(response), 400
-        response = {
-            # return success or failure
-            'text': 'Success'
-        }
 
-        return jsonify(response), 200
+            return jsonify(response), 200
+        response = {
+            'text': 'Failure'
+        }
+        return jsonify(response), 400
+
     else:
         response = {
             'text': 'Failure'
