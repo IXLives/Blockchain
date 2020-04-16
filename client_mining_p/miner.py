@@ -65,9 +65,9 @@ if __name__ == '__main__':
 
         # TODO: Get the block from `data` and use it to look for a new proof
         # new_proof = ???
-        print(data)
+        # print(data)
         block = data['block']
-        print(block)
+        # print(block)
         print('Finding new block')
         new_proof = proof_of_work(block)
         # When found, POST it to the server {"proof": new_proof, "id": id}
@@ -79,12 +79,15 @@ if __name__ == '__main__':
 
         # TODO: If the server responds with a 'message' 'New Block Forged'
         message = data['text']
-        if message == 'Success':
+        new_block = data['block']
+        transaction = block['transactions']
+        if 'block' in data:
             print('New Block Forged')
+            print(new_block, transaction)
             coins_mined += 1
         elif message == 'Failure':
             print('Failed for some reason')
         # add 1 to the number of coins mined and print it.  Otherwise,
         # print the message from the server.
-        print(message, coins_mined)
+        print(message, f'Total blocks mined: {coins_mined}')
         pass

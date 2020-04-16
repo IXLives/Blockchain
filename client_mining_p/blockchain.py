@@ -16,6 +16,23 @@ class Blockchain(object):
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
 
+    def new_transaction(self, sender, recipient, amount):
+        '''
+        Creates a new transaction to go into the next mined Block
+
+        sender: str address of the sender
+        recipient: str address of the recipient
+        amount: int amount
+        return int the index of the Block that will hold this transaction
+        '''
+        self.current_transactions.append({
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount
+        })
+
+        return self.last_block['index'] + 1
+
     def new_block(self, proof, previous_hash=None):
         """
         Create a new Block in the Blockchain
@@ -144,10 +161,16 @@ def mine():
     # check validity of proof and id, make sure proof is not already present
     if proof is not None and block_id is not None:
         if proof not in blockchain.chain:
-            blockchain.new_block(proof)
+            blockchain.new_transaction(
+                sender='0',
+                recipient=data['id'],
+                amount=1
+            )
+            new_block = blockchain.new_block(proof)
             response = {
                 # return success or failure
-                'text': 'Success'
+                'text': 'Success',
+                'block': new_block
             }
 
             return jsonify(response), 200
@@ -168,7 +191,7 @@ def full_chain():
     response = {
         # TODO: Return the chain and its current length
         'Blockchain': blockchain.chain,
-        'Length': len(blockchain.chain) - 1
+        'Length': len(blockchain.chain)
     }
     return jsonify(response), 200
 
@@ -178,6 +201,24 @@ def get_block():
     response = {
         'block': blockchain.last_block
     }
+    return jsonify(response), 200
+
+
+@app.route('/transactions/new', methods=['POST'])
+def new_transaction():
+    data = request.get_json()
+
+    # check for required fields
+    if 'recipient' not in data or 'amount' not in data or 'sender' not in data:
+        response = {'text': 'Error: missing values'}
+        return jsonify(response), 400
+
+    # Check that this transaction is valid
+
+    # create new transation
+    index = blockchain.new_transaction(
+        data['sender'], data['recipient'], data['amount'])
+    response = {'text': f'Transaction will be posted in block with {index}'}
     return jsonify(response), 200
 
 
