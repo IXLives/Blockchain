@@ -1,6 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useCountValue, useActions} from '../../features/counter';
 import classes from './Counter.module.css';
+
+const IdForm = props => {
+  const [id, setid] = useState('');
+
+  const handleSubmit = evt => {
+    evt.preventDefault();
+    console.log(`Submitting ID ${id}`);
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      ID:
+      <input
+        type="text"
+        name="ID"
+        value={id}
+        onChange={e => setid(e.target.value)}
+      />
+      <input type="submit" value="Submit" />
+    </form>
+  );
+};
 
 const Counter = () => {
   /**
@@ -16,6 +37,7 @@ const Counter = () => {
   return (
     <div className={classes.counter}>
       <h2 className={classes.header}>Enter ID</h2>
+      <IdForm />
       <button
         className={classes.button}
         type="button"
